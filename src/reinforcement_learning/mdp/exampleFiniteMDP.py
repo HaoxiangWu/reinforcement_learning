@@ -204,3 +204,5 @@ class ExampleGridWorldEnv(FiniteMDP):
 
         # render the viewer
         self._viewer.display(0.1)
+
+
