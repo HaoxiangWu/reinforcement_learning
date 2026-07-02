@@ -14,7 +14,6 @@ def evaluate_policy_mc(policy, V, returns_list:list, env:FiniteMDP, n_episodes=1
             # next_state, reward, done, _ = env.step(action)
             next_state, reward, done, _ = env.step(action)
             # Store state and reward tuple in episode
-            ### TODO ###
             episode.append((state, reward))
             state = next_state
             if done:
@@ -43,12 +42,12 @@ def evaluate_policy_td(policy:np.ndarray, V:np.ndarray, env:FiniteMDP, alpha=0.1
 
         # Generate an episode following the policy
         while not done:
-            action = policy[state] ### TODO ###
-            next_state, reward, done, _ = env.step(action) ### TODO ###
+            action = policy[state] 
+            next_state, reward, done, _ = env.step(action) 
             # Compute the TD target as r + gamma * V(s')
             td_target = reward + env._mdp_info.gamma * V[next_state] if not done else reward ### TODO ###
             # Update the value function using the TD error
-            V[state] = V[state] + alpha * (td_target - V[state]) ### TODO ###
+            V[state] = V[state] + alpha * (td_target - V[state]) 
             state = next_state
             if done:
                 break
@@ -64,26 +63,26 @@ def evaluate_policy_td_lambda(policy:np.ndarray, V:np.ndarray, env:FiniteMDP, al
 
     for _ in range(n_episodes):
         # Initialize state, done and eligibility trace
-        eligibility_trace = np.zeros(n_states) ### TODO ###
+        eligibility_trace = np.zeros(n_states)
         state = env.reset()
         done = False
 
         # Generate an episode following the policy
         while not done:
-            action = policy[state] ### TODO ###
-            next_state, reward, done, _ = env.step(action) ### TODO ###
+            action = policy[state] 
+            next_state, reward, done, _ = env.step(action) 
             # Compute the TD target as r + gamma * V(s')
-            td_target = reward + env._mdp_info.gamma * V[next_state] if not done else reward ### TODO ###
+            td_target = reward + env._mdp_info.gamma * V[next_state] if not done else reward 
             # Compute the TD error
-            td_error = td_target - V[state] ### TODO ###
+            td_error = td_target - V[state] 
             # Update the eligibility trace
-            eligibility_trace[state] += 1 ### TODO ###
+            eligibility_trace[state] += 1 
 
             for s in range(n_states):
                 # Update the value function using the TD error and the eligibility trace
-                V[s] = V[s] + alpha * td_error * eligibility_trace[s] ### TODO ###
+                V[s] = V[s] + alpha * td_error * eligibility_trace[s] 
                 # Update the eligibility trace using the decay factor
-                eligibility_trace[s] *= env._mdp_info.gamma * lmbda ### TODO ###
+                eligibility_trace[s] *= env._mdp_info.gamma * lmbda 
 
             if done:
                 break
