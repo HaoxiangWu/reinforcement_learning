@@ -1,5 +1,6 @@
 from reinforcement_learning import GridWorldEnv, policy_iteration, value_iteration
 import matplotlib.pyplot as plt
+from reinforcement_learning import evaluate_policy_td, evaluate_policy_td_lambda, evaluate_policy_mc
 
 
 # Define the grid structure
@@ -15,7 +16,8 @@ grid=np.array(
 )
 env = GridWorldEnv(grid)
 directions = env.directions
-env.render()
+# env.render()
+
 
 def visualize_value_matrices(V: np.ndarray, H: int, W: int, cell_list: list, label: str):
     """
@@ -67,5 +69,37 @@ V = value_iteration(env.p, env.r, env._mdp_info.gamma, eps=1e-6)
 
 # visualize the policy iteration
 V, pi = policy_iteration(env.p, env.r, gamma=0.99)
-visualize_value_matrices(V, env.shape[0], env.shape[1], env.cell_list, "Policy_Iteration_Value")
-visualize_policy(pi, env.shape[0], env.shape[1], env.cell_list,"Policy_Iteration_Policy")
+# visualize_value_matrices(V, env.shape[0], env.shape[1], env.cell_list, "Policy_Iteration_Value")
+# visualize_policy(pi, env.shape[0], env.shape[1], env.cell_list,"Policy_Iteration_Policy")
+
+
+# Initialize the value function
+V_MC_init = np.zeros(env.p.shape[0])
+V_TD_init = np.copy(V_MC_init)
+V_TD_lambda_init = np.copy(V_MC_init)
+
+
+# Evaluate the policy using Monte Carlo
+# Initialize the list of returns(s) for all states
+returns_list = [[] for _ in range(env.p.shape[0])]
+np.random.seed(0)
+V_MC = evaluate_policy_mc(pi, V_MC_init, returns_list, env, n_episodes=1000)
+# print(V_MC.shape)
+
+# Evaluate the policy using TD
+np.random.seed(0)
+V_TD = evaluate_policy_td(pi, V_TD_init, env, n_episodes=1000)
+# print(V_TD.shape)
+
+# Evaluate the policy using TD(\lambda)
+np.random.seed(0)
+V_TD_lambda = evaluate_policy_td_lambda(pi, V_TD_lambda_init, env, lmbda=0.5, n_episodes=1000)
+# print(V_TD_lambda.shape)
+print('Sanity check: TD=TD(lambda=0.5)', V_TD==V_TD_lambda)
+
+
+visualize_value_matrices(V_MC, grid.shape[0], grid.shape[1], env.cell_list, 'MC')
+
+visualize_value_matrices(V_TD, grid.shape[0], grid.shape[1], env.cell_list, 'TD(0)')
+
+visualize_value_matrices(V_TD_lambda, grid.shape[0], grid.shape[1], env.cell_list, 'TD(lambda=0.5)')

@@ -16,6 +16,8 @@ wheels/
 
 # Extra file
 logs/
+data/
+models/
 pictures/
 *.zip
 *.pdf

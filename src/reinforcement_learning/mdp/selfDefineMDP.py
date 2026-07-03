@@ -22,9 +22,9 @@ class SelfDefineMDP(FiniteMDP, ABC):
         self.cell_list = self._parse_cell_list()
         self.viewer = Viewer(self.shape[0]+1, self.shape[1]+1, 500, 500)
 
-        p = self.compute_probabilities(self.grid, self.cell_list, self.prob)
-        r = self.compute_rewards(self.grid, self.cell_list)
-        mu = self.initialize_state_distribution(self.cell_list, self.grid)
+        p = self.compute_probabilities(self.grid, self.cell_list, self.prob, **self.params)
+        r = self.compute_rewards(self.grid, self.cell_list, **self.params)
+        mu = self.initialize_state_distribution(self.cell_list, self.grid, **self.params)
         # call the super class
         super().__init__(p, r, mu, gamma, horizon)
         self.reset()
@@ -34,13 +34,13 @@ class SelfDefineMDP(FiniteMDP, ABC):
         pass
     
     @abstractmethod
-    def compute_probabilities(self, grid: np.ndarray, cell_list: list, prob: float):
+    def compute_probabilities(self, grid: np.ndarray, cell_list: list, prob: float, **kwargs):
         pass
     
     @abstractmethod
-    def compute_rewards(self, grid: np.ndarray, cell_list: list):
+    def compute_rewards(self, grid: np.ndarray, cell_list: list, **kwargs):
         pass
     
     @abstractmethod
-    def initialize_state_distribution(self, cell_list: list, grid: np.ndarray):
+    def initialize_state_distribution(self, cell_list: list, grid: np.ndarray, **kwargs):
         pass
