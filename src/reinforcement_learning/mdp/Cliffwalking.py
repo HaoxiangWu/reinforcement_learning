@@ -12,7 +12,7 @@ class CliffWalking(SelfDefineMDP):
         for i in range(H):
             for j in range(W):
                 if self.grid[i, j] in ['.', 'S', 'G']:
-                    cell_list.append((i, j))
+                    cell_list.append([i, j])
         return cell_list
     
     def compute_probabilities(self, grid: np.ndarray, cell_list: list, prob: float):
@@ -118,6 +118,8 @@ class CliffWalking(SelfDefineMDP):
 
         # get start position (cells of g with 'S')
         starts = np.argwhere(g == 'S')
+        if len(starts) == 0:
+            raise ValueError("CliffWalking grid must contain at least one 'S' (start) cell")
         # iterate over the starts, get their index in the cell list and update mu
         for start in starts:
             j = np.where((c == start).all(axis=1))[0]
@@ -135,31 +137,31 @@ class CliffWalking(SelfDefineMDP):
         return np.array([x, y])
     
     def render(self):
-        H, W = self.grid_map.shape
+        H, W = self.shape
         for row in range(0, H+1):
             for col in range(0, W+1):
-                self._viewer.line(np.array([col, 0]), np.array([col, H+1]))
-                self._viewer.line(np.array([0, row]), np.array([W+1, row]))
+                self.viewer.line(np.array([col, 0]), np.array([col, H+1]))
+                self.viewer.line(np.array([0, row]), np.array([W+1, row]))
         # get the stariway status and the agent pose
         agent_x, agent_y = self.cell_list[self._state[0]]
         for i in range(0, H):
             for j in range(0, W):
           # fill the cell with a gray square
-                self._viewer.square(self.tf(i,j), 0, 1, color='gray')
+                self.viewer.square(self.tf(i,j), 0, 1, color='gray')
                 # fill with red if lava
-                if self.grid_map[i][j]=='#':
-                    self._viewer.square(self.tf(i,j), 0, 1, color='red')
+                if self.grid[i][j]=='#':
+                    self.viewer.square(self.tf(i,j), 0, 1, color='red')
                 # fill with green for the goal
-                if self.grid_map[i][j]=='G':
-                    self._viewer.square(self.tf(i,j), 0, 1, color='green')
+                if self.grid[i][j]=='G':
+                    self.viewer.square(self.tf(i,j), 0, 1, color='green')
                 # fill with blue circle for the button
                 # fill in with yellow arrow if agent
                 if i==agent_x and j==agent_y:
-                    self._viewer.arrow_head(self.tf(i,j), 1, 0, color='yellow')
+                    self.viewer.arrow_head(self.tf(i,j), 1, 0, color='yellow')
         # render the viewer
         pygame.display.flip()
         # visualize
-        pygame.image.save(self._viewer.screen,'src/reinforcement_learning/pictures/CliffWalking.png')
+        pygame.image.save(self.viewer.screen,'src/reinforcement_learning/pictures/CliffWalking.png')
         img=cv2.imread('src/reinforcement_learning/pictures/CliffWalking.png')
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         plt.imshow(img)

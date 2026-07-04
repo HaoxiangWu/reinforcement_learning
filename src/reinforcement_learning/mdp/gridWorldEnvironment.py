@@ -117,6 +117,8 @@ class GridWorldEnv(SelfDefineMDP):
         for idx, (i, j)  in enumerate(cell_list):
             mu[idx] = 1. if g[i][j] == '.' else 0.
 
+        if mu.sum() == 0:
+            raise ValueError("GridWorldEnv grid must contain at least one '.' cell for initial state distribution")
         mu = mu / mu.sum()
         mu = mu.flatten()
         return mu

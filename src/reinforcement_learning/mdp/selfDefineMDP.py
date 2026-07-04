@@ -17,14 +17,20 @@ class SelfDefineMDP(FiniteMDP, ABC):
         self.shape = grid.shape
         assert len(self.shape) == 2, "The grid must be a 2D array."
         self.prob = prob
-        self.directions = [[0, 1], [-1, 0], [0, -1], [1, 0]]
+        if not (0 <= prob <= 1):
+            raise ValueError(f"prob must be in [0, 1], got {prob}")
+        self.directions = [[0, 1], [1, 0], [0, -1], [-1, 0]]  # Right, Down, Left, Up
         self.params = kwargs
         self.cell_list = self._parse_cell_list()
+        if len(self.cell_list) == 0:
+            raise ValueError("Grid contains no traversable cells")
         self.viewer = Viewer(self.shape[0]+1, self.shape[1]+1, 500, 500)
 
         p = self.compute_probabilities(self.grid, self.cell_list, self.prob, **self.params)
         r = self.compute_rewards(self.grid, self.cell_list, **self.params)
         mu = self.initialize_state_distribution(self.cell_list, self.grid, **self.params)
+        if not np.isclose(mu.sum(), 1.0):
+            raise ValueError(f"Initial state distribution must sum to 1, got {mu.sum()}")
         # call the super class
         super().__init__(p, r, mu, gamma, horizon)
         self.reset()
