@@ -6,6 +6,17 @@ import matplotlib.pyplot as plt
 
 
 class CliffWalking(SelfDefineMDP):
+    def _make_grid(self, grid: np.ndarray):
+        """
+        Create the grid for the CliffWalking environment.
+
+        Args:
+            grid (np.ndarray): 2D array representing the grid structure;
+        Returns:
+            The grid for the CliffWalking environment;
+        """
+        return grid
+
     def _parse_cell_list(self):
         cell_list = []
         H, W = self.shape
@@ -146,7 +157,7 @@ class CliffWalking(SelfDefineMDP):
         agent_x, agent_y = self.cell_list[self._state[0]]
         for i in range(0, H):
             for j in range(0, W):
-          # fill the cell with a gray square
+                # fill the cell with a gray square
                 self.viewer.square(self.tf(i,j), 0, 1, color='gray')
                 # fill with red if lava
                 if self.grid[i][j]=='#':

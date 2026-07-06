@@ -13,9 +13,9 @@ class SelfDefineMDP(FiniteMDP, ABC):
         horizon(int): the maximum number of steps in an episode.
         prob(float): the probability of taking the intended action.
         '''
-        self.grid = grid
-        self.shape = grid.shape
-        assert len(self.shape) == 2, "The grid must be a 2D array."
+        self.grid = self._make_grid(grid)
+        self.shape = self.grid.shape
+        assert len(self.shape) >= 2, "The grid must not be a 1D array."
         self.prob = prob
         if not (0 <= prob <= 1):
             raise ValueError(f"prob must be in [0, 1], got {prob}")
@@ -34,6 +34,10 @@ class SelfDefineMDP(FiniteMDP, ABC):
         # call the super class
         super().__init__(p, r, mu, gamma, horizon)
         self.reset()
+
+    @abstractmethod
+    def _make_grid(self, grid: np.ndarray):
+        pass
 
     @abstractmethod
     def _parse_cell_list(self):

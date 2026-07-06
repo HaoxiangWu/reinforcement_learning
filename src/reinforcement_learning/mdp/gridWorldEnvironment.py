@@ -21,6 +21,20 @@ class GridWorldEnv(SelfDefineMDP):
 
     We will go through an equivalent way to generate a grid world environment. Let's start by creating a sample grid:
     '''
+    
+    def _make_grid(self, grid: np.ndarray):
+        """
+        Create the grid for the GridWorld environment.
+
+        Args:
+            grid (np.ndarray): 2D array representing the grid structure;
+
+        Returns:
+            The grid for the GridWorld environment;
+
+        """
+        return grid
+
     def _parse_cell_list(self):
         cell_list = []
         for i in range(self.shape[0]):

@@ -61,7 +61,7 @@ Subclass mushroom-rl's `Agent`. Both use `Table` for Q-value storage:
 
 Standalone functions operating on raw numpy matrices (not mushroom-rl agents):
 - [`dynamic_Programming.py`](src/reinforcement_learning/utils/algorithm/dynamic_Programming.py) — `value_iteration()` and `policy_iteration()`. Useful as ground truth in tests.
-- [`TDPolicyEvaluation.py`](src/reinforcement_learning/utils/algorithm/TDPolicyEvaluation.py) — `evaluate_policy_mc()`, `evaluate_policy_td()`, `evaluate_policy_td_lambda()`. **Note:** `policy_evaluation.py` is a near-duplicate; the package imports from `TDPolicyEvaluation.py`.
+- [`TDPolicyEvaluation.py`](src/reinforcement_learning/utils/algorithm/TDPolicyEvaluation.py) — `evaluate_policy_mc()`, `evaluate_policy_td()`, `evaluate_policy_td_lambda()`.
 
 ### Examples (`example/`)
 
@@ -72,8 +72,6 @@ Scripts that also serve as integration tests:
 
 ## Known Bugs
 
-1. **CliffWalking `render()` crash** — references `self.grid_map` (never set; only `self.grid` exists) and `self._viewer` (parent `FiniteMDP` stores it as `self.viewer`). Causes `AttributeError`.
-2. **Cell list type inconsistency** — `CliffWalking._parse_cell_list` returns tuples `(i,j)`, `GridWorldEnv._parse_cell_list` returns lists `[i,j]`. Both work since consumers convert to `np.array`, but the inconsistency can surprise.
 
 ## Testing
 

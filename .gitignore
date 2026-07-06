@@ -21,3 +21,4 @@ models/
 pictures/
 *.zip
 *.pdf
+.claude
