@@ -123,36 +123,36 @@ class StairToHeaven(SelfDefineMDP):
         return mu
     
     def render(self):
-      _, H, W = self.grid_map.shape
+      _, H, W = self.grid.shape
       # create the grid
       for row in range(0, H+1):
         for col in range(0, W+1):
-          self._viewer.line(np.array([col, 0]), np.array([col, H+1]))
-          self._viewer.line(np.array([0, row]), np.array([W+1, row]))
+          self.viewer.line(np.array([col, 0]), np.array([col, H+1]))
+          self.viewer.line(np.array([0, row]), np.array([W+1, row]))
 
       # get the stairway status and the agent pose
       s, agent_x, agent_y = self.cell_list[self._state[0]]
       for i in range(0, H):
         for j in range(0, W):
           # fill the cell with a gray square
-          self._viewer.square(self.tf(i, j), 0, 1, color='gray')
+          self.viewer.square(self.tf(i, j), 0, 1, color='gray')
           # fill with blue circle for the button
           if i == 0 and j == 0:
-            self._viewer.circle(self.tf(i, j), 0.4, color='blue')
+            self.viewer.circle(self.tf(i, j), 0.4, color='blue')
           # fill with red if lava
           if self.grid_map[s][i][j] == '#':
-            self._viewer.square(self.tf(i, j), 0, 1, color='red')
+            self.viewer.square(self.tf(i, j), 0, 1, color='red')
           # fill with green for the goal
-          if self.grid_map[s][i][j] == 'G':
-            self._viewer.square(self.tf(i, j), 0, 1, color='green')
+          if self.grid[s][i][j] == 'G':
+            self.viewer.square(self.tf(i, j), 0, 1, color='green')
           # fill in with yellow arrow if agent
           if i == agent_x and j == agent_y:
-            self._viewer.arrow_head(self.tf(i, j), 1, 0, color='yellow')
+            self.viewer.arrow_head(self.tf(i, j), 1, 0, color='yellow')
 
       # render the viewer
       pygame.display.flip()
       # visualize
-      pygame.image.save(self._viewer.screen,'src/reinforcement_learning/pictures/image.png')
+      pygame.image.save(self.viewer.screen,'src/reinforcement_learning/pictures/image.png')
       img = cv2.imread('image.png')
       img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
       plt.imshow(img)
